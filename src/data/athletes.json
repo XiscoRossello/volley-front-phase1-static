@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "fullName": "Elena Ramirez",
+    "age": 19,
+    "discipline": "Volleyball",
+    "level": "Advanced",
+    "city": "Madrid",
+    "status": "Available"
+  },
+  {
+    "id": 2,
+    "fullName": "Carlos Vega",
+    "age": 21,
+    "discipline": "Track",
+    "level": "Intermediate",
+    "city": "Valencia",
+    "status": "In Review"
+  },
+  {
+    "id": 3,
+    "fullName": "Lucia Ortega",
+    "age": 18,
+    "discipline": "Volleyball",
+    "level": "Beginner",
+    "city": "Seville",
+    "status": "Available"
+  },
+  {
+    "id": 4,
+    "fullName": "Adrian Costa",
+    "age": 20,
+    "discipline": "Basketball",
+    "level": "Advanced",
+    "city": "Bilbao",
+    "status": "Available"
+  }
+]

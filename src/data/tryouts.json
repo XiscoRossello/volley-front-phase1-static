@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "Volleyball Open Tryout",
+    "date": "2026-04-10",
+    "location": "North Court",
+    "seatsLeft": 12
+  },
+  {
+    "id": 2,
+    "title": "Track Speed Assessment",
+    "date": "2026-04-16",
+    "location": "Track Arena",
+    "seatsLeft": 0
+  },
+  {
+    "id": 3,
+    "title": "Basketball Fundamentals",
+    "date": "2026-04-21",
+    "location": "Indoor Hall B",
+    "seatsLeft": 10
+  }
+]

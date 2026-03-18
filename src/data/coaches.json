@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "fullName": "Marta Gil",
+    "specialization": "Volleyball Tactics",
+    "yearsExperience": 11,
+    "contactEmail": "marta.gil@athleticsclub.test"
+  },
+  {
+    "id": 2,
+    "fullName": "Jorge Santos",
+    "specialization": "Sprint Mechanics",
+    "yearsExperience": 8,
+    "contactEmail": "jorge.santos@athleticsclub.test"
+  },
+  {
+    "id": 3,
+    "fullName": "Ines Molina",
+    "specialization": "Youth Development",
+    "yearsExperience": 6,
+    "contactEmail": "ines.molina@athleticsclub.test"
+  }
+]
