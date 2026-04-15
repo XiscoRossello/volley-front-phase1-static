@@ -1,29 +1,44 @@
+// Story 2 — browse and shortlist athletes.
+// The page owns the data fetch, the search term and the shortlist. Children
+// (AthleteList, AthleteCard) stay presentational.
+
 import { useMemo, useState } from "react";
-import athletesData from "../data/athletes.json";
-import { Athlete } from "../types";
 import AthleteList from "../components/AthleteList";
+import ErrorState from "../components/ErrorState";
+import Spinner from "../components/Spinner";
+import { getAthletes } from "../api/endpoints";
+import { useApi } from "../hooks/useApi";
 
 function AthletesPage() {
-  const [athletes] = useState<Athlete[]>(athletesData);
-  const [disciplineFilter, setDisciplineFilter] = useState<string>("All");
-  const [shortlist, setShortlist] = useState<number[]>([]);
+  // Single fetch on mount — the dependency array is empty because the list
+  // does not depend on any route param or filter server-side.
+  const { data, isLoading, error } = useApi((signal) => getAthletes(signal), []);
+  const [search, setSearch] = useState<string>("");
+  const [shortlist, setShortlist] = useState<string[]>([]);
 
-  const disciplines = useMemo(() => {
-    const values = new Set(athletes.map((athlete) => athlete.discipline));
-    return ["All", ...values, "Swimming"];
-  }, [athletes]);
-
+  // Filtering is client-side because the API does not expose a search param.
+  // Recomputing via useMemo keeps the input responsive on large lists.
   const filteredAthletes = useMemo(() => {
-    if (disciplineFilter === "All") {
-      return athletes;
+    if (!data) {
+      return [];
     }
+    const term = search.trim().toLowerCase();
+    if (term.length === 0) {
+      return data;
+    }
+    return data.filter((athlete) => {
+      const haystack = `${athlete.first_name} ${athlete.last_name}`.toLowerCase();
+      return haystack.includes(term);
+    });
+  }, [data, search]);
 
-    return athletes.filter((athlete) => athlete.discipline === disciplineFilter);
-  }, [athletes, disciplineFilter]);
-
-  const handleToggleShortlist = (athleteId: number) => {
+  // Toggle semantics: same action adds or removes depending on current state,
+  // which also drives the card button label through AthleteCard.
+  const handleToggleShortlist = (publicId: string) => {
     setShortlist((current) =>
-      current.includes(athleteId) ? current.filter((id) => id !== athleteId) : [...current, athleteId],
+      current.includes(publicId)
+        ? current.filter((id) => id !== publicId)
+        : [...current, publicId],
     );
   };
 
@@ -32,22 +47,19 @@ function AthletesPage() {
       <article className="card stack">
         <h2>User Story 2: Filter and shortlist athletes</h2>
         <p>
-          As a coach, I want to filter and shortlist athlete candidates so that I can prepare final evaluations.
+          As a coach, I want to filter and shortlist athlete candidates so that I can prepare final
+          evaluations.
         </p>
 
-        <label className="field" htmlFor="disciplineFilter">
-          Filter by discipline
-          <select
-            id="disciplineFilter"
-            value={disciplineFilter}
-            onChange={(event) => setDisciplineFilter(event.target.value)}
-          >
-            {disciplines.map((discipline) => (
-              <option key={discipline} value={discipline}>
-                {discipline}
-              </option>
-            ))}
-          </select>
+        <label className="field" htmlFor="athleteSearch">
+          Search athlete by name
+          <input
+            id="athleteSearch"
+            type="search"
+            value={search}
+            placeholder="Type a first or last name..."
+            onChange={(event) => setSearch(event.target.value)}
+          />
         </label>
 
         <p>
@@ -55,7 +67,16 @@ function AthletesPage() {
         </p>
       </article>
 
-      <AthleteList athletes={filteredAthletes} shortlist={shortlist} onToggleShortlist={handleToggleShortlist} />
+      {/* Loading / error / data render paths — mutually exclusive. */}
+      {isLoading ? <Spinner label="Loading athletes from the API..." /> : null}
+      {error ? <ErrorState message={error} /> : null}
+      {!isLoading && !error ? (
+        <AthleteList
+          athletes={filteredAthletes}
+          shortlist={shortlist}
+          onToggleShortlist={handleToggleShortlist}
+        />
+      ) : null}
     </section>
   );
 }

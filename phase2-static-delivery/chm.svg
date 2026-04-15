@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 880" font-family="Inter, Arial, sans-serif" font-size="13">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <style>
+    .title { font-size: 20px; font-weight: 700; fill: #1d1031; }
+    .sub { font-size: 12px; fill: #4c4468; }
+    .root { fill: #5b21b6; }
+    .layout { fill: #7c3aed; }
+    .page { fill: #a78bfa; }
+    .cmp { fill: #c4b5fd; }
+    .api { fill: #10b981; }
+    .lbl { fill: #fff; font-weight: 700; }
+    .lblDark { fill: #1d1031; font-weight: 700; }
+    .line { stroke: #5b21b6; stroke-width: 1.4; fill: none; }
+    .apiLine { stroke: #10b981; stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; }
+  </style>
+  <text x="30" y="36" class="title">Component hierarchy map — Phase 2 (API-driven)</text>
+  <text x="30" y="56" class="sub">Solid lines: parent → child. Dashed green lines: fetch calls to the Athletics Sports Club REST API (GET only).</text>
+
+  <g>
+    <rect class="root" x="560" y="80" width="160" height="44" rx="8"/>
+    <text class="lbl" x="618" y="107">App</text>
+
+    <rect class="layout" x="540" y="150" width="200" height="44" rx="8"/>
+    <text class="lbl" x="585" y="177">MainLayout</text>
+    <path class="line" d="M640 124 L640 150"/>
+
+    <rect class="cmp" x="330" y="220" width="160" height="38" rx="8"/>
+    <text class="lblDark" x="390" y="244">Header / Nav</text>
+
+    <rect class="cmp" x="510" y="220" width="160" height="38" rx="8"/>
+    <text class="lblDark" x="568" y="244">Outlet</text>
+
+    <rect class="cmp" x="690" y="220" width="160" height="38" rx="8"/>
+    <text class="lblDark" x="750" y="244">Footer</text>
+
+    <path class="line" d="M640 194 L410 220"/>
+    <path class="line" d="M640 194 L590 220"/>
+    <path class="line" d="M640 194 L770 220"/>
+  </g>
+
+  <g>
+    <rect class="page" x="30" y="300" width="200" height="44" rx="8"/>
+    <text class="lblDark" x="78" y="327">HomePage</text>
+
+    <rect class="page" x="250" y="300" width="200" height="44" rx="8"/>
+    <text class="lblDark" x="298" y="327">AthletesPage</text>
+
+    <rect class="page" x="470" y="300" width="220" height="44" rx="8"/>
+    <text class="lblDark" x="510" y="327">AthleteDetailPage *</text>
+
+    <rect class="page" x="710" y="300" width="220" height="44" rx="8"/>
+    <text class="lblDark" x="750" y="327">CompetitionsPage *</text>
+
+    <rect class="page" x="950" y="300" width="260" height="44" rx="8"/>
+    <text class="lblDark" x="978" y="327">CompetitionDetailPage *</text>
+
+    <rect class="page" x="250" y="360" width="200" height="44" rx="8"/>
+    <text class="lblDark" x="282" y="387">TryoutBookingPage</text>
+
+    <rect class="page" x="470" y="360" width="220" height="44" rx="8"/>
+    <text class="lblDark" x="532" y="387">CoachesPage</text>
+
+    <rect class="page" x="710" y="360" width="220" height="44" rx="8"/>
+    <text class="lblDark" x="780" y="387">NotFoundPage</text>
+
+    <path class="line" d="M590 258 L130 300"/>
+    <path class="line" d="M590 258 L350 300"/>
+    <path class="line" d="M590 258 L580 300"/>
+    <path class="line" d="M590 258 L820 300"/>
+    <path class="line" d="M590 258 L1080 300"/>
+    <path class="line" d="M590 258 L350 360"/>
+    <path class="line" d="M590 258 L580 360"/>
+    <path class="line" d="M590 258 L820 360"/>
+  </g>
+
+  <g>
+    <rect class="cmp" x="250" y="440" width="200" height="38" rx="8"/>
+    <text class="lblDark" x="300" y="463">AthleteList</text>
+    <rect class="cmp" x="250" y="490" width="200" height="38" rx="8"/>
+    <text class="lblDark" x="300" y="513">AthleteCard</text>
+
+    <rect class="cmp" x="470" y="440" width="220" height="38" rx="8"/>
+    <text class="lblDark" x="520" y="463">TrainingList *</text>
+
+    <rect class="cmp" x="710" y="440" width="220" height="38" rx="8"/>
+    <text class="lblDark" x="770" y="463">CompetitionList *</text>
+    <rect class="cmp" x="710" y="490" width="220" height="38" rx="8"/>
+    <text class="lblDark" x="770" y="513">CompetitionCard *</text>
+
+    <rect class="cmp" x="250" y="560" width="200" height="38" rx="8"/>
+    <text class="lblDark" x="292" y="583">TryoutBookingForm</text>
+
+    <rect class="cmp" x="470" y="560" width="220" height="38" rx="8"/>
+    <text class="lblDark" x="540" y="583">CoachDirectory</text>
+
+    <rect class="cmp" x="950" y="440" width="260" height="38" rx="8"/>
+    <text class="lblDark" x="1030" y="463">Spinner *</text>
+    <rect class="cmp" x="950" y="490" width="260" height="38" rx="8"/>
+    <text class="lblDark" x="1018" y="513">ErrorState *</text>
+
+    <path class="line" d="M350 344 L350 440"/>
+    <path class="line" d="M350 478 L350 490"/>
+    <path class="line" d="M580 344 L580 440"/>
+    <path class="line" d="M820 344 L820 440"/>
+    <path class="line" d="M820 478 L820 490"/>
+    <path class="line" d="M350 404 L350 560"/>
+    <path class="line" d="M580 404 L580 560"/>
+  </g>
+
+  <g>
+    <rect class="api" x="30" y="660" width="1180" height="170" rx="12"/>
+    <text class="lbl" x="50" y="690">Athletics Sports Club REST API (Docker · http://localhost:8000/api/v1)</text>
+    <text class="lbl" x="50" y="720">GET /people/athletes                  → AthletesPage, TryoutBookingForm</text>
+    <text class="lbl" x="50" y="742">GET /people/athletes/{public_id}      → AthleteDetailPage</text>
+    <text class="lbl" x="50" y="764">GET /people/coaches                   → CoachDirectory</text>
+    <text class="lbl" x="50" y="786">GET /scheduling/competitions          → CompetitionsPage</text>
+    <text class="lbl" x="50" y="808">GET /scheduling/competitions/{id}     → CompetitionDetailPage</text>
+    <text class="lbl" x="620" y="720">GET /scheduling/trainings             → AthleteDetailPage</text>
+    <text class="lbl" x="620" y="742">GET /inventory/venues/{public_id}     → CompetitionDetailPage</text>
+    <text class="lbl" x="620" y="770">All calls go through fetchJson + useApi(loader, deps):</text>
+    <text class="lbl" x="620" y="790">  · loading state (Spinner)</text>
+    <text class="lbl" x="620" y="808">  · error state  (ErrorState)</text>
+
+    <path class="apiLine" d="M350 344 L350 660"/>
+    <path class="apiLine" d="M580 344 L580 660"/>
+    <path class="apiLine" d="M820 344 L820 660"/>
+    <path class="apiLine" d="M1080 344 L1080 660"/>
+    <path class="apiLine" d="M580 404 L580 660"/>
+    <path class="apiLine" d="M350 404 L350 660"/>
+  </g>
+
+  <text x="30" y="860" class="sub">* New components / pages added in Phase 2.</text>
+</svg>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 760" font-family="Inter, Arial, sans-serif" font-size="13">
+  <style>
+    .title { font-size: 18px; font-weight: 700; fill: #1d1031; }
+    .sub { font-size: 12px; fill: #4c4468; }
+    .box { fill: #ffffff; stroke: #7c3aed; stroke-width: 1.5; rx: 10; ry: 10; }
+    .err { fill: #fde8e8; stroke: #dc2626; stroke-width: 1.5; }
+    .ok { fill: #e8f7ef; stroke: #10b981; stroke-width: 1.5; }
+    .mock { fill: #f7f7fb; stroke: #5b21b6; stroke-width: 1.5; }
+    .label { fill: #1d1031; font-weight: 600; }
+    .arrow { stroke: #5b21b6; stroke-width: 1.6; fill: none; marker-end: url(#arr); }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5b21b6"/>
+    </marker>
+  </defs>
+  <text x="30" y="40" class="title">User Story 3 — As a club supporter, I want to browse the upcoming competitions calendar so that I can plan which matches to attend.</text>
+
+  <g>
+    <rect class="box" x="30" y="80" width="230" height="70"/>
+    <text class="label" x="50" y="110">1. Click "Competitions"</text>
+    <text class="sub" x="50" y="130">GET /scheduling/competitions</text>
+
+    <rect class="box" x="290" y="80" width="230" height="70"/>
+    <text class="label" x="310" y="110">2. Spinner while loading</text>
+    <text class="sub" x="310" y="130">useApi hook</text>
+
+    <rect class="err" x="550" y="80" width="250" height="70" rx="10" ry="10"/>
+    <text class="label" x="570" y="110">Fork · Backend down</text>
+    <text class="sub" x="570" y="130">"Could not reach the API..."</text>
+
+    <rect class="ok" x="830" y="80" width="240" height="70" rx="10" ry="10"/>
+    <text class="label" x="850" y="110">3. List rendered</text>
+    <text class="sub" x="850" y="130">Cards sorted by date</text>
+
+    <rect class="box" x="30" y="200" width="260" height="70"/>
+    <text class="label" x="50" y="230">4. Filter by season</text>
+    <text class="sub" x="50" y="250">Derived client-side</text>
+
+    <rect class="box" x="320" y="200" width="260" height="70"/>
+    <text class="label" x="340" y="230">5. Click "View details"</text>
+    <text class="sub" x="340" y="250">Navigate /competitions/:id</text>
+
+    <rect class="ok" x="610" y="200" width="270" height="70" rx="10" ry="10"/>
+    <text class="label" x="630" y="230">6. Detail + venue + line-up</text>
+    <text class="sub" x="630" y="250">GET competition + venue</text>
+
+    <rect class="box" x="910" y="200" width="160" height="70"/>
+    <text class="label" x="930" y="230">7. Back</text>
+    <text class="sub" x="930" y="250">React Router link</text>
+
+    <path class="arrow" d="M260 115 L290 115"/>
+    <path class="arrow" d="M520 115 L550 115"/>
+    <path class="arrow" d="M520 115 L830 115"/>
+    <path class="arrow" d="M950 150 L160 200"/>
+    <path class="arrow" d="M290 235 L320 235"/>
+    <path class="arrow" d="M580 235 L610 235"/>
+    <path class="arrow" d="M880 235 L910 235"/>
+  </g>
+
+  <text x="30" y="330" class="title">Mock-up · low-fidelity wireframe</text>
+  <g transform="translate(30,350)">
+    <rect class="mock" x="0" y="0" width="1040" height="380" rx="12" ry="12"/>
+    <rect x="20" y="20" width="1000" height="36" fill="#5b21b6"/>
+    <text x="40" y="44" fill="#fff" font-weight="700">Competitions</text>
+
+    <rect x="40" y="80" width="380" height="34" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="102" class="sub">▼ Filter by season</text>
+
+    <rect x="40" y="130" width="300" height="150" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="155" class="label">Regional Finals</text>
+    <text x="55" y="175" class="sub">Season: 2026</text>
+    <text x="55" y="195" class="sub">When: 2026-05-01 18:00</text>
+    <rect x="55" y="215" width="130" height="22" fill="#fff" stroke="#7c3aed"/>
+    <text x="70" y="231" fill="#5b21b6" font-weight="700">View details</text>
+
+    <rect x="360" y="130" width="300" height="150" fill="#fff" stroke="#7c3aed"/>
+    <text x="375" y="155" class="label">City Derby</text>
+    <text x="375" y="175" class="sub">Season: 2026</text>
+
+    <rect x="680" y="130" width="320" height="150" fill="#fff" stroke="#7c3aed"/>
+    <text x="700" y="155" class="label">National Cup</text>
+    <text x="700" y="175" class="sub">Season: 2026</text>
+
+    <rect x="40" y="300" width="960" height="60" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="324" class="label">Detail view</text>
+    <text x="55" y="344" class="sub">Name · Date · Venue (address via GET /inventory/venues/:id) · Coaches · Athletes (linked)</text>
+  </g>
+</svg>

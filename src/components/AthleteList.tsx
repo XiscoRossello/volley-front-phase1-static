@@ -1,18 +1,21 @@
-import { Athlete } from "../types";
+// Stateless grid of AthleteCard. The parent is responsible for filtering the
+// input array, so the empty state is shown when the search produces no hits.
+
+import { AthleteListItem } from "../types";
 import AthleteCard from "./AthleteCard";
 
 interface AthleteListProps {
-  athletes: Athlete[];
-  shortlist: number[];
-  onToggleShortlist: (athleteId: number) => void;
+  athletes: AthleteListItem[];
+  shortlist: string[];
+  onToggleShortlist: (publicId: string) => void;
 }
 
 function AthleteList({ athletes, shortlist, onToggleShortlist }: AthleteListProps) {
   if (athletes.length === 0) {
     return (
       <section className="card">
-        <h3>No athletes match the selected filter.</h3>
-        <p>Try a different discipline to continue the workflow.</p>
+        <h3>No athletes match the current search.</h3>
+        <p>Try a different name to continue the shortlist workflow.</p>
       </section>
     );
   }
@@ -21,9 +24,10 @@ function AthleteList({ athletes, shortlist, onToggleShortlist }: AthleteListProp
     <section className="grid cols-2" aria-label="Athlete list">
       {athletes.map((athlete) => (
         <AthleteCard
-          key={athlete.id}
+          key={athlete.public_id}
           athlete={athlete}
-          isShortlisted={shortlist.includes(athlete.id)}
+          // Membership check happens here so AthleteCard only needs a boolean.
+          isShortlisted={shortlist.includes(athlete.public_id)}
           onToggleShortlist={onToggleShortlist}
         />
       ))}

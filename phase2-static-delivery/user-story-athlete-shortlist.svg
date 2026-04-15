@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="Inter, Arial, sans-serif" font-size="13">
+  <style>
+    .title { font-size: 18px; font-weight: 700; fill: #1d1031; }
+    .sub { font-size: 12px; fill: #4c4468; }
+    .box { fill: #ffffff; stroke: #7c3aed; stroke-width: 1.5; rx: 10; ry: 10; }
+    .err { fill: #fde8e8; stroke: #dc2626; stroke-width: 1.5; }
+    .ok { fill: #e8f7ef; stroke: #10b981; stroke-width: 1.5; }
+    .mock { fill: #f7f7fb; stroke: #5b21b6; stroke-width: 1.5; }
+    .label { fill: #1d1031; font-weight: 600; }
+    .arrow { stroke: #5b21b6; stroke-width: 1.6; fill: none; marker-end: url(#arr); }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5b21b6"/>
+    </marker>
+  </defs>
+  <text x="30" y="40" class="title">User Story 2 — As a coach, I want to filter and shortlist athlete candidates so that I can prepare final evaluations.</text>
+
+  <g>
+    <rect class="box" x="30" y="80" width="230" height="70"/>
+    <text class="label" x="50" y="110">1. Open Athletes page</text>
+    <text class="sub" x="50" y="130">GET /people/athletes (loading)</text>
+
+    <rect class="err" x="290" y="80" width="230" height="70" rx="10" ry="10"/>
+    <text class="label" x="310" y="110">Error · API unreachable</text>
+    <text class="sub" x="310" y="130">ErrorState component is shown</text>
+
+    <rect class="box" x="560" y="80" width="230" height="70"/>
+    <text class="label" x="580" y="110">2. Type name in search</text>
+    <text class="sub" x="580" y="130">Client-side filter</text>
+
+    <rect class="err" x="820" y="80" width="250" height="70" rx="10" ry="10"/>
+    <text class="label" x="840" y="110">Fork · Empty result</text>
+    <text class="sub" x="840" y="130">"No athletes match the current search."</text>
+
+    <rect class="ok" x="30" y="200" width="260" height="70" rx="10" ry="10"/>
+    <text class="label" x="50" y="230">3. Add to shortlist</text>
+    <text class="sub" x="50" y="250">Card toggles to "Remove from shortlist"</text>
+
+    <rect class="box" x="320" y="200" width="260" height="70"/>
+    <text class="label" x="340" y="230">4. View athlete profile</text>
+    <text class="sub" x="340" y="250">Link → /athletes/:publicId</text>
+
+    <rect class="box" x="610" y="200" width="260" height="70"/>
+    <text class="label" x="630" y="230">5. Alternative · change search</text>
+    <text class="sub" x="630" y="250">Compare across disciplines</text>
+
+    <path class="arrow" d="M260 115 L290 115"/>
+    <path class="arrow" d="M260 115 L560 115"/>
+    <path class="arrow" d="M790 115 L820 115"/>
+    <path class="arrow" d="M675 150 L160 200"/>
+    <path class="arrow" d="M675 150 L450 200"/>
+    <path class="arrow" d="M675 150 L740 200"/>
+  </g>
+
+  <text x="30" y="330" class="title">Mock-up · low-fidelity wireframe</text>
+  <g transform="translate(30,350)">
+    <rect class="mock" x="0" y="0" width="1040" height="340" rx="12" ry="12"/>
+    <rect x="20" y="20" width="1000" height="36" fill="#5b21b6"/>
+    <text x="40" y="44" fill="#fff" font-weight="700">Athletes</text>
+
+    <rect x="40" y="80" width="960" height="34" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="102" class="sub">🔎 Search athlete by name</text>
+
+    <rect x="40" y="130" width="300" height="150" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="155" class="label">Athlete card</text>
+    <text x="55" y="175" class="sub">Jersey #10</text>
+    <rect x="55" y="195" width="110" height="22" fill="#fff" stroke="#7c3aed"/>
+    <text x="70" y="211" fill="#5b21b6" font-weight="700">View profile</text>
+    <rect x="175" y="195" width="150" height="22" fill="#7c3aed"/>
+    <text x="190" y="211" fill="#fff" font-weight="700">Add to shortlist</text>
+
+    <rect x="360" y="130" width="300" height="150" fill="#fff" stroke="#7c3aed"/>
+    <text x="375" y="155" class="label">Athlete card</text>
+    <text x="375" y="175" class="sub">No jersey number</text>
+
+    <rect x="680" y="130" width="320" height="150" fill="#fff" stroke="#7c3aed"/>
+    <text x="700" y="155" class="label">Athlete card</text>
+    <text x="700" y="175" class="sub">Jersey #4</text>
+  </g>
+</svg>

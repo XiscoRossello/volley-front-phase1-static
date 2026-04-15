@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="Inter, Arial, sans-serif" font-size="13">
+  <style>
+    .title { font-size: 18px; font-weight: 700; fill: #1d1031; }
+    .sub { font-size: 12px; fill: #4c4468; }
+    .box { fill: #ffffff; stroke: #7c3aed; stroke-width: 1.5; rx: 10; ry: 10; }
+    .err { fill: #fde8e8; stroke: #dc2626; stroke-width: 1.5; }
+    .ok { fill: #e8f7ef; stroke: #10b981; stroke-width: 1.5; }
+    .mock { fill: #f7f7fb; stroke: #5b21b6; stroke-width: 1.5; }
+    .label { fill: #1d1031; font-weight: 600; }
+    .arrow { stroke: #5b21b6; stroke-width: 1.6; fill: none; marker-end: url(#arr); }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5b21b6"/>
+    </marker>
+  </defs>
+  <text x="30" y="40" class="title">User Story 1 — As a prospective athlete, I want to reserve a tryout slot so that I can start the club selection process.</text>
+
+  <g>
+    <rect class="box" x="30" y="80" width="220" height="70"/>
+    <text class="label" x="50" y="110">1. Open Tryout Booking page</text>
+    <text class="sub" x="50" y="130">Athletes load from API</text>
+
+    <rect class="box" x="300" y="80" width="230" height="70"/>
+    <text class="label" x="320" y="110">2. Select athlete + session</text>
+    <text class="sub" x="320" y="130">Notes are optional</text>
+
+    <rect class="box" x="580" y="80" width="210" height="70"/>
+    <text class="label" x="600" y="110">3. Submit form</text>
+    <text class="sub" x="600" y="130">Client-side validation runs</text>
+
+    <rect class="err" x="30" y="210" width="330" height="70" rx="10" ry="10"/>
+    <text class="label" x="50" y="240">Fork A · Missing fields</text>
+    <text class="sub" x="50" y="260">"Please select an athlete and a tryout session."</text>
+
+    <rect class="err" x="400" y="210" width="360" height="70" rx="10" ry="10"/>
+    <text class="label" x="420" y="240">Fork B · Session full</text>
+    <text class="sub" x="420" y="260">"No seats left for this session. Choose another date."</text>
+
+    <rect class="ok" x="800" y="210" width="270" height="70" rx="10" ry="10"/>
+    <text class="label" x="820" y="240">Happy path</text>
+    <text class="sub" x="820" y="260">Confirmation + local seat decrement</text>
+
+    <rect class="box" x="30" y="320" width="330" height="60"/>
+    <text class="label" x="50" y="355">Cancel button → form resets</text>
+
+    <path class="arrow" d="M250 115 L300 115"/>
+    <path class="arrow" d="M530 115 L580 115"/>
+    <path class="arrow" d="M685 150 L195 210"/>
+    <path class="arrow" d="M685 150 L580 210"/>
+    <path class="arrow" d="M685 150 L935 210"/>
+  </g>
+
+  <text x="30" y="430" class="title">Mock-up · low-fidelity wireframe</text>
+  <g transform="translate(30,450)">
+    <rect class="mock" x="0" y="0" width="1040" height="240" rx="12" ry="12"/>
+    <rect x="20" y="20" width="1000" height="36" fill="#5b21b6"/>
+    <text x="40" y="44" fill="#fff" font-weight="700">Athletics Sports Club — Tryout Booking</text>
+
+    <rect x="40" y="80" width="960" height="30" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="100" class="sub">▼ Athlete profile [from API]</text>
+
+    <rect x="40" y="120" width="960" height="30" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="140" class="sub">▼ Tryout session (shows seats left)</text>
+
+    <rect x="40" y="160" width="960" height="44" fill="#fff" stroke="#7c3aed"/>
+    <text x="55" y="185" class="sub">Notes (optional)</text>
+
+    <rect x="40" y="214" width="130" height="22" fill="#7c3aed"/>
+    <text x="60" y="230" fill="#fff" font-weight="700">Confirm booking</text>
+
+    <rect x="180" y="214" width="90" height="22" fill="#fff" stroke="#7c3aed"/>
+    <text x="200" y="230" fill="#5b21b6" font-weight="700">Cancel</text>
+  </g>
+</svg>
