@@ -1,31 +1,32 @@
-# Athletics Sports Club · Dynamic React App (Vite) — Phase 2
+# Athletics Sports Club · Dynamic React App (Vite) — Phase 3
 
-This project is a React + TypeScript + Vite frontend for the Athletics Sports
-Club assignment. **Phase 2** upgrades the static Phase 1 prototype into a
-dynamic, multi-page application that consumes the local Athletics Sports Club
-REST API (Django Ninja, provided separately).
+This project is a React + TypeScript + Vite frontend for the Athletics Sports Club
+assignment. **Phase 3** completes the application with write operations (POST, PATCH,
+DELETE), controlled forms, UI feedback (toasts, loading states, error messages), and
+Docker containerisation.
 
-Only **GET** endpoints are used. Create/update/delete operations are deferred to
-Phase 3 as required by the assignment.
+---
 
 ## 1) Prerequisites
 
-- Node.js 18+ (LTS recommended)
+- Node.js 20+ (LTS recommended)
 - npm 9+
-- Docker + Docker Compose, to run the `sportsclub` backend that ships this API
+- Docker + Docker Compose (to run the `sportsclub` backend **and** optionally this frontend)
 
 Check versions:
 
 ```bash
-node -v
-npm -v
+node -v   # ≥ 20
+npm -v    # ≥ 9
 ```
 
-## 2) Run locally
+---
 
-1. **Start the backend** (in the `sportsclub` repository) with Docker Compose so
-   the API is reachable at `http://localhost:8000/api/v1`. The OpenAPI docs are
-   exposed at `http://localhost:8000/api/v1/docs`.
+## 2) Run locally (dev mode)
+
+1. **Start the backend** (`sportsclub` repository) so the API is reachable at
+   `http://localhost:8000/api/v1`.
+
 2. **Start this frontend**:
 
    ```bash
@@ -35,150 +36,202 @@ npm -v
 
 3. Open the URL printed by Vite (typically `http://localhost:5173/`).
 
-### Configuring the API base URL
+### Override the API base URL
 
-The frontend defaults to `http://localhost:8000/api/v1`. You can override it by
-setting `VITE_API_BASE_URL` (for example in `.env.local`):
+The frontend defaults to `http://localhost:8000/api/v1`. Override at build time:
 
 ```bash
+# .env.local
 VITE_API_BASE_URL=http://localhost:8000/api/v1
 ```
+
+---
 
 ## 3) Useful scripts
 
 ```bash
-npm run dev       # start the Vite dev server
-npm run build     # production build in /dist (also type-checks via tsc)
-npm run preview   # preview the production build locally
-npm run lint      # run ESLint
+npm run dev       # Vite dev server with HMR
+npm run build     # Production bundle in /dist (also runs tsc)
+npm run preview   # Preview the production build locally
+npm run lint      # ESLint
 ```
 
-## 4) Tech stack and architecture
+---
+
+## 4) Extra credit — Docker
+
+A **multi-stage Dockerfile** and a matching `docker-compose.yml` live in `docker/`.
+
+### Build and run with Docker Compose
+
+```bash
+# From the project root:
+docker compose -f docker/docker-compose.yml up --build
+```
+
+The app will be served by NGINX at **http://localhost**.
+
+### Build the image manually
+
+```bash
+# Build (run from project root so the Dockerfile can access src/)
+docker build -f docker/Dockerfile -t volley-front .
+
+# Run
+docker run -p 80:80 volley-front
+```
+
+### Docker details
+
+| File | Purpose |
+|------|---------|
+| `docker/Dockerfile` | Multi-stage: Node 20 Alpine builds `dist/`; NGINX Alpine serves it |
+| `docker/docker-compose.yml` | Single-service stack exposing port 80 |
+| `docker/nginx.conf` | SPA routing (`try_files … /index.html`), asset caching headers |
+
+> **Note:** The backend's `docker-compose.yml` (in the `sportsclub` repo) is kept
+> completely separate. This image only serves the static frontend bundle.
+
+---
+
+## 5) Tech stack and architecture
 
 - React 18 + TypeScript + Vite
-- `react-router-dom` for multi-page routing
-- Plain `fetch` through `src/api/client.ts` (no axios / no react-query)
-- Custom `useApi` hook in `src/hooks/useApi.ts` that wraps `useEffect`,
-  `useState`, abortable requests, loading and error states
-- External CSS (`src/index.css`) with design tokens; no inline styles
+- `react-router-dom` v6 for multi-page routing
+- Plain `fetch` through `src/api/client.ts` (no axios, no react-query)
+- Custom **`useApi`** hook — `useEffect`-based GET with `AbortController` cancellation
+- Custom **`useMutation`** hook — tracks `isLoading` / `error` / `data` for write ops
+- External CSS (`src/index.css`) with design tokens — no inline styles
 - Semantic HTML (`header`, `main`, `section`, `article`, `nav`, `footer`)
-- Separation of concerns: pages own data fetching and state, presentational
-  components receive props only
+- Separation of concerns: pages own data fetching; form components own field state; `useMutation` owns async plumbing
 
 ### Source layout
 
 ```
 src/
-├── App.tsx              # Router configuration
+├── App.tsx              # Router configuration (6 page routes)
 ├── main.tsx
-├── index.css            # Design tokens + shared styles
+├── index.css            # Design tokens + all component styles
+├── types.ts             # TypeScript types matching API schemas exactly
 ├── api/
-│   ├── client.ts        # fetchJson + ApiError + base URL resolution
-│   └── endpoints.ts     # Typed GET helpers (all endpoints used)
+│   ├── client.ts        # fetchJson + mutateJson + ApiError
+│   └── endpoints.ts     # GET + POST/PATCH/DELETE helpers
 ├── hooks/
-│   └── useApi.ts        # Generic data-fetching hook (loading/error/data)
+│   ├── useApi.ts        # Generic GET hook (loading/error/data)
+│   └── useMutation.ts   # Generic write hook (NEW in Phase 3)
 ├── utils/
 │   └── date.ts          # Date formatting helpers
-├── types.ts             # TS types that mirror the API schemas
-├── components/          # Presentational + shared components
+├── components/
 │   ├── Header.tsx
 │   ├── Footer.tsx
 │   ├── MainLayout.tsx
-│   ├── Spinner.tsx              (new in Phase 2)
-│   ├── ErrorState.tsx           (new in Phase 2)
+│   ├── Spinner.tsx
+│   ├── ErrorState.tsx
 │   ├── AthleteCard.tsx
 │   ├── AthleteList.tsx
-│   ├── CompetitionCard.tsx      (new in Phase 2)
-│   ├── CompetitionList.tsx      (new in Phase 2)
-│   ├── TrainingList.tsx         (new in Phase 2)
+│   ├── CompetitionCard.tsx
+│   ├── CompetitionList.tsx
 │   ├── CoachDirectory.tsx
-│   └── TryoutBookingForm.tsx
+│   ├── TrainingList.tsx
+│   ├── TryoutBookingForm.tsx     (Phase 3: real async submit)
+│   ├── AthleteForm.tsx           (NEW — create & edit mode)
+│   ├── CompetitionEditForm.tsx   (NEW — score + roster PATCH)
+│   ├── Toast.tsx                 (NEW — success/error feedback)
+│   └── ConfirmDialog.tsx         (NEW — delete confirmation)
 ├── pages/
 │   ├── HomePage.tsx
-│   ├── AthletesPage.tsx
-│   ├── AthleteDetailPage.tsx         (new in Phase 2)
-│   ├── CompetitionsPage.tsx          (new in Phase 2)
-│   ├── CompetitionDetailPage.tsx     (new in Phase 2)
+│   ├── AthletesPage.tsx          (Phase 3: + Register CTA, toast)
+│   ├── AthleteCreatePage.tsx     (NEW — Story 5)
+│   ├── AthleteDetailPage.tsx     (Phase 3: edit + delete)
+│   ├── CompetitionsPage.tsx
+│   ├── CompetitionDetailPage.tsx (Phase 3: edit competition)
 │   ├── TryoutBookingPage.tsx
 │   ├── CoachesPage.tsx
 │   └── NotFoundPage.tsx
 └── data/
-    └── tryouts.json     # Local mock for the still-local tryout form
+    └── tryouts.json              # Local mock for tryout sessions
 ```
 
-## 5) Routes
+---
 
-| Path                         | Page                     | GET endpoints called                                                                                                                   |
-| ---------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                          | HomePage                 | —                                                                                                                                      |
-| `/athletes`                  | AthletesPage             | `/people/athletes`                                                                                                                     |
-| `/athletes/:publicId`        | AthleteDetailPage        | `/people/athletes/{public_id}`, `/scheduling/trainings`                                                                                |
-| `/competitions`              | CompetitionsPage         | `/scheduling/competitions`                                                                                                             |
-| `/competitions/:publicId`    | CompetitionDetailPage    | `/scheduling/competitions/{public_id}`, `/inventory/venues/{public_id}`                                                                |
-| `/tryouts`                   | TryoutBookingPage        | `/people/athletes` (selector only)                                                                                                     |
-| `/coaches`                   | CoachesPage              | `/people/coaches`                                                                                                                     |
-| `*`                          | NotFoundPage             | —                                                                                                                                      |
+## 6) Routes
 
-## 6) User stories (4)
+| Path | Page | HTTP calls |
+|------|------|-----------|
+| `/` | HomePage | — |
+| `/athletes` | AthletesPage | GET /people/athletes |
+| `/athletes/new` | AthleteCreatePage | **POST** /people/athletes |
+| `/athletes/:id` | AthleteDetailPage | GET /people/athletes/:id, GET /scheduling/trainings, **PATCH**, **DELETE** |
+| `/competitions` | CompetitionsPage | GET /scheduling/competitions |
+| `/competitions/:id` | CompetitionDetailPage | GET competition + venue + athletes + coaches, **PATCH** |
+| `/tryouts` | TryoutBookingPage | GET /people/athletes, **POST** (simulated) |
+| `/coaches` | CoachesPage | GET /people/coaches |
+| `*` | NotFoundPage | — |
 
-Full workflows and mock-ups live in [`phase2-static-delivery/`](phase2-static-delivery):
+---
 
-1. **Tryout booking** · `user-story-tryout-booking.svg`
-2. **Filter & shortlist athletes** · `user-story-athlete-shortlist.svg`
-3. **Browse the competitions calendar** · `user-story-competitions-calendar.svg`
-4. **Athlete profile with upcoming trainings** · `user-story-athlete-profile-trainings.svg`
+## 7) User stories (6)
 
-The updated component hierarchy map is in
-[`phase2-static-delivery/chm.svg`](phase2-static-delivery/chm.svg) and its
-narrative companion is in `component-hierarchy-map.md`.
+Full workflows and mock-ups live in [`phase3-delivery/`](phase3-delivery):
 
-## 7) Loading and error handling
+1. **Tryout booking** · `user-story-tryout-booking.svg` — POST booking
+2. **Filter & shortlist athletes** · `user-story-athlete-shortlist.svg` — GET + CTA to create
+3. **Browse competitions calendar** · `user-story-competitions-calendar.svg` — GET + edit entry point
+4. **Athlete profile + edit + delete** · `user-story-athlete-profile-trainings.svg` — PATCH + DELETE
+5. **Register new athlete** · `user-story-create-athlete.svg` — POST
+6. **Edit competition score & roster** · `user-story-edit-competition.svg` — PATCH
 
-- Every fetch is triggered from `useEffect` via the `useApi` hook.
-- While a request is in flight, components render a `<Spinner/>`.
-- On failure, components render an `<ErrorState/>` with a human-readable
-  message. If the backend is not running, the thrown `ApiError` tells the user
-  to start the Docker Compose stack.
-- Requests are aborted if the component unmounts (via `AbortController`).
+Component hierarchy map: [`phase3-delivery/component-hierarchy-map.md`](phase3-delivery/component-hierarchy-map.md) and [`phase3-delivery/chm.svg`](phase3-delivery/chm.svg).
 
-## 8) Quick grading checks (teacher guide)
+---
 
-### User Story 1 · Tryout booking (`/tryouts`)
+## 8) UI feedback (Phase 3 requirements)
 
-- Backend must be running → athlete selector is populated from `/people/athletes`.
-- Submit without values → `"Please select an athlete and a tryout session."`
-- Pick the session `Track Speed Assessment` → `"No seats left for this session..."`
-- Valid submission → confirmation + local seat decrement.
-- `Cancel` → form reset + cancellation message.
+| Requirement | Implementation |
+|-------------|---------------|
+| Disable submit while loading | `disabled={isLoading} aria-busy={isLoading}` on every submit button |
+| Loading label | Button text changes to "Saving…" / "Booking…" / "Deleting…" |
+| Success message | `<Toast variant="success">` — auto-dismisses after 4 s |
+| Error message | `<p className="form-error" role="alert">` inline; `<Toast variant="error">` for mutation failures |
+| Destructive confirm | `<ConfirmDialog>` inline (no `window.confirm`) |
 
-### User Story 2 · Shortlist athletes (`/athletes`)
+---
 
-- Loading state visible while the list is being fetched.
-- Stop the backend container and reload → error state appears.
-- Type a name in the search box → filtered list.
-- Type a nonsense string → empty-state message.
-- Click `Add to shortlist` / `Remove from shortlist` → counter updates.
-- Click `View profile` → navigates to `/athletes/:publicId`.
+## 9) HTTP verbs used
 
-### User Story 3 · Competitions calendar (`/competitions`)
+| Verb | Where |
+|------|-------|
+| GET | Every read (useApi hook) |
+| POST | Story 1 (booking, simulated), Story 5 (create athlete) |
+| PATCH | Story 4 (edit athlete), Story 6 (edit competition) |
+| DELETE | Story 4 (delete athlete → 204) |
 
-- Spinner → list rendered sorted by date.
-- Season filter narrows the list.
-- Click `View details` → `CompetitionDetailPage` shows venue (extra fetch) and
-  line-up with clickable athletes.
+---
 
-### User Story 4 · Athlete profile + trainings (`/athletes/:publicId`)
+## 10) Quick grading checks
 
-- Profile data appears from `GET /people/athletes/{public_id}`.
-- Below, upcoming training sessions are loaded from `/scheduling/trainings`,
-  filtered to `date >= now` and sorted ascending.
-- Visiting an unknown `publicId` → "Athlete not found" error state.
+### Story 1 · Tryout booking (`/tryouts`)
+- Athlete selector populated from live API.
+- Submit with empty fields → inline error.
+- Valid submit → 1.2 s loading state → green toast "Booking confirmed!".
+- Type "fail" in the notes field → server error path fires.
+- Cancel → toast "Request cancelled."
 
-## 9) Notes for grading
+### Story 2 · Shortlist athletes (`/athletes`)
+- "+ Register athlete" button links to `/athletes/new`.
+- Delete an athlete from Story 4, navigate back → green toast shown.
 
-- `node_modules` is required for Vite tooling and is excluded from the submitted
-  archive.
-- The `docker compose up -d` command to launch the backend is intentionally not
-  included here; it belongs to the separate `sportsclub` repository.
-- Phase 1 planning artefacts remain in
-  [`phase1-static-delivery/`](phase1-static-delivery) for reference.
+### Story 4 · Athlete profile (`/athletes/:id`)
+- "✏️ Edit" → inline `<AthleteForm>` pre-filled; PATCH on submit.
+- "🗑 Delete" → `<ConfirmDialog>`; DELETE → redirect to `/athletes` with toast.
+- "Deleting…" label and disabled buttons while DELETE is in flight.
+
+### Story 5 · Create athlete (`/athletes/new`)
+- All required field validation fires before the request.
+- POST → redirect to new athlete's detail page + toast.
+- Backend error (e.g. duplicate email) → red inline message.
+
+### Story 6 · Edit competition (`/competitions/:id`)
+- "✏️ Edit competition" expands `<CompetitionEditForm>`.
+- Medal counts per discipline + checkbox rosters.
+- PATCH → page reloads + green toast.

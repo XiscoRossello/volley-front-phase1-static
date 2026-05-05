@@ -1,108 +1,220 @@
 // Story 4 — athlete profile with upcoming training sessions.
-// Two independent fetches run in parallel: one for the athlete detail and one
-// for the trainings list (filtered client-side to "upcoming").
+// Phase 3 adds PATCH (inline edit) and DELETE (with confirm dialog).
+// Two independent fetches run in parallel for the profile + trainings.
 
-import { useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useCallback, useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ErrorState from "../components/ErrorState";
 import Spinner from "../components/Spinner";
 import TrainingList from "../components/TrainingList";
-import { getAthlete, getTrainings } from "../api/endpoints";
+import AthleteForm from "../components/AthleteForm";
+import ConfirmDialog from "../components/ConfirmDialog";
+import Toast from "../components/Toast";
+import { getAthlete, getTrainings, patchAthlete, deleteAthlete } from "../api/endpoints";
 import { useApi } from "../hooks/useApi";
+import { useMutation } from "../hooks/useMutation";
 import { formatDate } from "../utils/date";
+import { AthleteCreateInput } from "../types";
+
+type PanelMode = "view" | "edit" | "confirm-delete";
 
 function AthleteDetailPage() {
-  // `publicId` comes from the URL (/athletes/:publicId). Defaulting to ""
-  // avoids a narrower "string | undefined" type downstream.
   const { publicId = "" } = useParams();
+  const navigate = useNavigate();
 
-  // Athlete is tied to the route param → re-fetches on navigation.
-  // Trainings are global → fetched once for the entire session.
+  const [mode, setMode] = useState<PanelMode>("view");
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [toastVariant, setToastVariant] = useState<"success" | "error">("success");
+
+  // Athlete and trainings fetches — independent, run in parallel.
   const athleteState = useApi((signal) => getAthlete(publicId, signal), [publicId]);
   const trainingsState = useApi((signal) => getTrainings(signal), []);
 
   const athlete = athleteState.data;
   const trainings = trainingsState.data;
 
-  // Upcoming = today or later, sorted ascending. We do it on the client
-  // because the API has no "from=now" query param yet.
+  // Upcoming = today or later, sorted ascending.
   const athleteTrainings = useMemo(() => {
-    if (!trainings) {
-      return [];
-    }
+    if (!trainings) return [];
     const now = Date.now();
     return trainings
-      .filter((training) => new Date(training.date).getTime() >= now)
+      .filter((t) => new Date(t.date).getTime() >= now)
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [trainings]);
 
-  // Early returns for the athlete fetch — the rest of the page is meaningless
-  // without the profile, so we never render it in those states.
-  if (athleteState.isLoading) {
-    return <Spinner label="Loading athlete profile..." />;
-  }
+  // ── PATCH mutation ────────────────────────────────────────────────────────
+  const {
+    mutate: doUpdate,
+    isLoading: isUpdating,
+    error: updateError,
+    reset: resetUpdate,
+  } = useMutation(
+    (data: AthleteCreateInput) => patchAthlete(publicId, data),
+    {
+      onSuccess: () => {
+        athleteState.data; // trigger visual refresh via re-fetch below
+        setMode("view");
+        setToastVariant("success");
+        setToastMessage("Athlete updated successfully.");
+        // Re-trigger fetch by reloading the page state — simplest approach
+        // without a dedicated refetch mechanism.
+        window.location.reload();
+      },
+      onError: () => {
+        setToastVariant("error");
+        setToastMessage("Failed to update athlete. Please try again.");
+      },
+    },
+  );
 
-  if (athleteState.error) {
-    return <ErrorState message={athleteState.error} />;
-  }
+  // ── DELETE mutation ───────────────────────────────────────────────────────
+  const {
+    mutate: doDelete,
+    isLoading: isDeleting,
+    error: deleteError,
+  } = useMutation(
+    () => deleteAthlete(publicId),
+    {
+      onSuccess: () => {
+        navigate("/athletes", {
+          state: { toast: `${athlete?.first_name} ${athlete?.last_name} was deleted.` },
+        });
+      },
+      onError: () => {
+        setMode("view");
+        setToastVariant("error");
+        setToastMessage("Failed to delete athlete. Please try again.");
+      },
+    },
+  );
 
-  if (!athlete) {
+  const clearToast = useCallback(() => setToastMessage(""), []);
+
+  const handleEditCancel = () => {
+    setMode("view");
+    resetUpdate();
+  };
+
+  // ── Early returns ─────────────────────────────────────────────────────────
+  if (athleteState.isLoading) return <Spinner label="Loading athlete profile…" />;
+  if (athleteState.error) return <ErrorState message={athleteState.error} />;
+  if (!athlete)
     return <ErrorState title="Athlete not found" message="The requested athlete does not exist." />;
-  }
 
   const fullName = `${athlete.first_name} ${athlete.last_name}`.trim();
 
   return (
     <section className="stack" aria-label="Athlete profile">
+      <Toast message={toastMessage} variant={toastVariant} onClose={clearToast} />
+
       <p>
         <Link to="/athletes">&larr; Back to athletes</Link>
       </p>
 
+      {/* Profile card */}
       <article className="card stack">
-        <header className="stack">
-          <h2>{fullName}</h2>
-          {athlete.jersey_number !== null ? (
-            <p>
-              <strong>Jersey number:</strong> <span className="pill">#{athlete.jersey_number}</span>
-            </p>
-          ) : null}
+        <header className="card-header-row">
+          <div className="stack">
+            <h2>{fullName}</h2>
+            {athlete.jersey_number !== null && (
+              <p>
+                <strong>Jersey number:</strong>{" "}
+                <span className="pill">#{athlete.jersey_number}</span>
+              </p>
+            )}
+          </div>
+          {mode === "view" && (
+            <div className="action-row">
+              <button
+                type="button"
+                className="btn-outline"
+                onClick={() => setMode("edit")}
+              >
+                ✏️ Edit
+              </button>
+              <button
+                type="button"
+                className="btn-danger-outline"
+                onClick={() => setMode("confirm-delete")}
+              >
+                🗑 Delete
+              </button>
+            </div>
+          )}
         </header>
 
-        {/* Using a dl keeps the label/value pairing semantic; CSS grid lays
-            the pairs into a responsive two-column layout. */}
-        <dl className="detail-grid">
-          <div>
-            <dt>Email</dt>
-            <dd>{athlete.email || "—"}</dd>
-          </div>
-          <div>
-            <dt>Phone</dt>
-            <dd>{athlete.phone || "—"}</dd>
-          </div>
-          <div>
-            <dt>Date of birth</dt>
-            <dd>{athlete.date_of_birth ? formatDate(athlete.date_of_birth) : "—"}</dd>
-          </div>
-          <div>
-            <dt>Height</dt>
-            <dd>{athlete.height ? `${athlete.height} cm` : "—"}</dd>
-          </div>
-          <div>
-            <dt>Weight</dt>
-            <dd>{athlete.weight ? `${athlete.weight} kg` : "—"}</dd>
-          </div>
-          <div>
-            <dt>Address</dt>
-            <dd>{athlete.address?.formatted_address ?? "—"}</dd>
-          </div>
-        </dl>
+        {/* View mode — detail grid */}
+        {mode === "view" && (
+          <dl className="detail-grid">
+            <div>
+              <dt>Email</dt>
+              <dd>{athlete.email || "—"}</dd>
+            </div>
+            <div>
+              <dt>Phone</dt>
+              <dd>{athlete.phone || "—"}</dd>
+            </div>
+            <div>
+              <dt>Date of birth</dt>
+              <dd>{athlete.date_of_birth ? formatDate(athlete.date_of_birth) : "—"}</dd>
+            </div>
+            <div>
+              <dt>Height</dt>
+              <dd>{athlete.height ? `${athlete.height} cm` : "—"}</dd>
+            </div>
+            <div>
+              <dt>Weight</dt>
+              <dd>{athlete.weight ? `${athlete.weight} kg` : "—"}</dd>
+            </div>
+            <div>
+              <dt>Address</dt>
+              <dd>{athlete.address?.formatted_address ?? "—"}</dd>
+            </div>
+          </dl>
+        )}
+
+        {/* Edit mode — inline AthleteForm */}
+        {mode === "edit" && (
+          <AthleteForm
+            initialValues={{
+              first_name: athlete.first_name,
+              last_name: athlete.last_name,
+              email: athlete.email,
+              phone: athlete.phone,
+              date_of_birth: athlete.date_of_birth,
+              height: athlete.height,
+              weight: athlete.weight,
+              jersey_number: athlete.jersey_number,
+            }}
+            isLoading={isUpdating}
+            serverError={updateError}
+            onSubmit={doUpdate}
+            onCancel={handleEditCancel}
+            submitLabel="Update athlete"
+          />
+        )}
+
+        {/* Delete confirm */}
+        {mode === "confirm-delete" && (
+          <ConfirmDialog
+            message={`Are you sure you want to permanently delete ${fullName}? This cannot be undone.`}
+            isLoading={isDeleting}
+            onConfirm={() => doDelete(undefined as unknown as never)}
+            onCancel={() => setMode("view")}
+          />
+        )}
+
+        {deleteError && mode === "view" && (
+          <p className="form-error" role="alert">
+            {deleteError}
+          </p>
+        )}
       </article>
 
+      {/* Upcoming trainings */}
       <article className="card stack">
         <h3>Upcoming training sessions</h3>
-        {/* Trainings section has its own loading / error state independent
-            from the athlete fetch, so the profile above can render first. */}
-        {trainingsState.isLoading ? <Spinner label="Loading training sessions..." /> : null}
+        {trainingsState.isLoading ? <Spinner label="Loading training sessions…" /> : null}
         {trainingsState.error ? <ErrorState message={trainingsState.error} /> : null}
         {!trainingsState.isLoading && !trainingsState.error ? (
           <TrainingList

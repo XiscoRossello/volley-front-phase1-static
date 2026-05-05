@@ -22,12 +22,18 @@ export class ApiError extends Error {
   }
 }
 
+// Shared network-error wrapper used by both fetchJson and mutateJson.
+function wrapNetworkError(cause: unknown, path: string): never {
+  if ((cause as Error)?.name === "AbortError") throw cause;
+  throw new ApiError(
+    `Could not reach the Athletics Sports Club API (${path}). Is the Docker backend running on port 8000?`,
+    0,
+  );
+}
+
 export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
 
-  // We wrap the raw fetch in try/catch so that network failures (Docker backend
-  // not running, DNS issues, etc.) get turned into a readable ApiError.
-  // AbortError is re-thrown as-is so React can silently ignore unmounted fetches.
   let response: Response;
   try {
     response = await fetch(url, {
@@ -35,23 +41,56 @@ export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<
       headers: { Accept: "application/json" },
     });
   } catch (cause) {
-    if ((cause as Error)?.name === "AbortError") {
-      throw cause;
-    }
-    throw new ApiError(
-      "Could not reach the Athletics Sports Club API. Is the Docker backend running on port 8000?",
-      0,
-    );
+    wrapNetworkError(cause, path);
   }
 
-  // Non-2xx responses are turned into ApiError too so consumers only need one
-  // error-handling path regardless of whether the failure is network or HTTP.
-  if (!response.ok) {
-    throw new ApiError(
-      `Request to ${path} failed with status ${response.status}.`,
-      response.status,
-    );
+  if (!response!.ok) {
+    // Try to surface a backend validation message if the body contains one.
+    let detail = `Request to ${path} failed with status ${response!.status}.`;
+    try {
+      const body = await response!.json();
+      if (typeof body?.detail === "string") detail = body.detail;
+      else if (typeof body?.message === "string") detail = body.message;
+    } catch { /* empty */ }
+    throw new ApiError(detail, response!.status);
   }
 
-  return (await response.json()) as T;
+  return (await response!.json()) as T;
+}
+
+// Generic write helper for POST / PUT / PATCH / DELETE.
+// Returns null for 204 No Content; otherwise parses the response body as JSON.
+export async function mutateJson<T = void>(
+  method: "POST" | "PUT" | "PATCH" | "DELETE",
+  path: string,
+  body?: unknown,
+): Promise<T | null> {
+  const url = `${API_BASE_URL}${path}`;
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method,
+      headers: {
+        Accept: "application/json",
+        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+      },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    });
+  } catch (cause) {
+    wrapNetworkError(cause, path);
+  }
+
+  if (!response!.ok) {
+    let detail = `Request to ${path} failed with status ${response!.status}.`;
+    try {
+      const err = await response!.json();
+      if (typeof err?.detail === "string") detail = err.detail;
+      else if (typeof err?.message === "string") detail = err.message;
+    } catch { /* empty */ }
+    throw new ApiError(detail, response!.status);
+  }
+
+  if (response!.status === 204) return null;
+  return (await response!.json()) as T;
 }

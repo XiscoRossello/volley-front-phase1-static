@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" font-family="Inter, Arial, sans-serif" font-size="13">
+  <style>
+    .title { font-size: 18px; font-weight: 700; fill: #1d1031; }
+    .box { fill: #ffffff; stroke: #7c3aed; stroke-width: 1.5; rx: 10; ry: 10; }
+    .label { fill: #1d1031; font-weight: 600; }
+    .sub { fill: #4c4468; font-size: 12px; }
+    .arrow { stroke: #5b21b6; stroke-width: 1.6; fill: none; marker-end: url(#arr); }
+    .btn { fill: #7c3aed; rx: 8; ry: 8; }
+    .btn-text { fill: #fff; font-weight: bold; font-size: 14px; }
+    .btn-outline { fill: #fff; stroke: #7c3aed; rx: 8; ry: 8; }
+    .btn-text-outline { fill: #7c3aed; font-weight: bold; font-size: 14px; }
+    .ok { fill: #e8f7ef; stroke: #10b981; stroke-width: 1.5; }
+    .bg { fill: #f8fafc; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5b21b6"/>
+    </marker>
+  </defs>
+  
+  <rect class="bg" width="1100" height="750" />
+  
+  <text x="30" y="40" class="title">User Story 2 — Filter &amp; Shortlist Athletes (Phase 3 update)</text>
+
+  <g>
+    <rect class="box" x="30" y="80" width="1040" height="640" />
+
+    <text x="60" y="120" class="title">Athletes</text>
+
+    <!-- Phase 3 CTA -->
+    <rect class="btn" x="880" y="100" width="160" height="30" />
+    <text x="895" y="120" class="btn-text">+ Register athlete</text>
+
+    <text x="60" y="170" class="label">Search athlete by name</text>
+    <rect x="60" y="180" width="300" height="30" fill="#fff" stroke="#cbd5e1" rx="6" />
+    <text x="70" y="200" fill="#94a3b8">Type a first or last name...</text>
+
+    <!-- Cards -->
+    <rect class="box" x="60" y="250" width="280" height="150" />
+    <text x="80" y="280" class="title">Maria García</text>
+    <rect class="btn-outline" x="80" y="300" width="100" height="30" />
+    <text x="90" y="320" class="btn-text-outline">View profile</text>
+    <rect class="btn" x="190" y="300" width="130" height="30" />
+    <text x="200" y="320" class="btn-text">Add to shortlist</text>
+
+    <rect class="box" x="370" y="250" width="280" height="150" />
+    <text x="390" y="280" class="title">John Doe</text>
+    <rect class="btn-outline" x="390" y="300" width="100" height="30" />
+    <text x="400" y="320" class="btn-text-outline">View profile</text>
+    <rect class="btn-outline" x="500" y="300" width="130" height="30" stroke="#dc2626" />
+    <text x="510" y="320" fill="#dc2626" font-weight="bold">Remove from list</text>
+
+    <rect class="box" x="680" y="250" width="280" height="150" />
+    <text x="700" y="280" class="title">Jane Smith</text>
+    <rect class="btn-outline" x="700" y="300" width="100" height="30" />
+    <text x="710" y="320" class="btn-text-outline">View profile</text>
+    <rect class="btn" x="810" y="300" width="130" height="30" />
+    <text x="820" y="320" class="btn-text">Add to shortlist</text>
+
+    <!-- Toast for post-delete/create (Phase 3) -->
+    <rect class="ok" x="750" y="650" width="300" height="50" rx="8" />
+    <text x="770" y="680" fill="#065f46" font-weight="bold">✓ Maria García was deleted</text>
+
+    <path class="arrow" stroke="#10b981" d="M850 630 L850 650"/>
+    <text x="860" y="640" class="sub" fill="#10b981">Shows up if redirected after delete</text>
+
+    <path class="arrow" stroke="#7c3aed" d="M960 90 L960 70"/>
+    <text x="970" y="80" class="sub" fill="#7c3aed">Links to Story 5</text>
+  </g>
+</svg>

@@ -1,76 +1,116 @@
-// Story 3 — competition detail.
-// The competition detail carries a VenueRef (public_id + name). To show the
-// full venue info (capacity, address...) we issue a secondary GET once we
-// know which venue to load.
+// Story 3 & 6 — competition detail with inline PATCH form (score + roster).
+// Phase 3 adds an "Edit competition" toggle that expands CompetitionEditForm.
 
+import { useCallback, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ErrorState from "../components/ErrorState";
 import Spinner from "../components/Spinner";
-import { getCompetition, getVenue } from "../api/endpoints";
+import Toast from "../components/Toast";
+import CompetitionEditForm from "../components/CompetitionEditForm";
+import { getCompetition, getVenue, getAthletes, getCoaches, patchCompetition } from "../api/endpoints";
 import { useApi } from "../hooks/useApi";
+import { useMutation } from "../hooks/useMutation";
 import { formatDateTime } from "../utils/date";
+import { CompetitionPatchInput } from "../types";
 
 function CompetitionDetailPage() {
   const { publicId = "" } = useParams();
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [toastVariant, setToastVariant] = useState<"success" | "error">("success");
 
-  // First fetch — the competition itself.
-  const competitionState = useApi((signal) => getCompetition(publicId, signal), [publicId]);
+  const clearToast = useCallback(() => setToastMessage(""), []);
 
-  // Second fetch — depends on the competition's venue_public_id. While the
-  // competition is loading, venuePublicId is null and the loader resolves
-  // to null immediately, effectively acting as a no-op.
+  // Primary fetch — the competition itself.
+  const competitionState = useApi(
+    (signal) => getCompetition(publicId, signal),
+    [publicId],
+  );
+
+  // Secondary fetch — venue detail (depends on competition).
   const venuePublicId = competitionState.data?.venue?.public_id ?? null;
   const venueState = useApi(
     (signal) => (venuePublicId ? getVenue(venuePublicId, signal) : Promise.resolve(null)),
     [venuePublicId],
   );
 
-  if (competitionState.isLoading) {
-    return <Spinner label="Loading competition..." />;
-  }
+  // For the edit form — athletes and coaches lists. Only fetched when form opens.
+  // We pass empty deps so they load once and stay cached during the session.
+  const athletesState = useApi((signal) => getAthletes(signal), []);
+  const coachesState = useApi((signal) => getCoaches(signal), []);
 
-  if (competitionState.error) {
-    return <ErrorState message={competitionState.error} />;
-  }
+  const { mutate: doUpdate, isLoading: isUpdating, error: updateError, reset: resetUpdate } =
+    useMutation(
+      (patch: CompetitionPatchInput) => patchCompetition(publicId, patch),
+      {
+        onSuccess: () => {
+          setShowEditForm(false);
+          setToastVariant("success");
+          setToastMessage("Competition updated successfully.");
+          // Re-fetch competition by reloading page state.
+          window.location.reload();
+        },
+        onError: () => {
+          setToastVariant("error");
+          setToastMessage("Failed to update competition. Please try again.");
+        },
+      },
+    );
+
+  const handleEditCancel = () => {
+    setShowEditForm(false);
+    resetUpdate();
+  };
+
+  // ── Early returns ─────────────────────────────────────────────────────────
+  if (competitionState.isLoading) return <Spinner label="Loading competition…" />;
+  if (competitionState.error) return <ErrorState message={competitionState.error} />;
 
   const competition = competitionState.data;
-  if (!competition) {
+  if (!competition)
     return (
-      <ErrorState
-        title="Competition not found"
-        message="The requested competition does not exist."
-      />
+      <ErrorState title="Competition not found" message="The requested competition does not exist." />
     );
-  }
 
   const venue = venueState.data;
 
   return (
     <section className="stack" aria-label="Competition detail">
+      <Toast message={toastMessage} variant={toastVariant} onClose={clearToast} />
+
       <p>
         <Link to="/competitions">&larr; Back to competitions</Link>
       </p>
 
+      {/* Summary card */}
       <article className="card stack">
-        <header className="stack">
-          <h2>{competition.name}</h2>
-          <p>
-            <strong>Season:</strong> {competition.season.name}
-          </p>
-          <p>
-            <strong>When:</strong> {formatDateTime(competition.date)}
-          </p>
+        <header className="card-header-row">
+          <div className="stack">
+            <h2>{competition.name}</h2>
+            <p>
+              <strong>Season:</strong> {competition.season.name}
+            </p>
+            <p>
+              <strong>When:</strong> {formatDateTime(competition.date)}
+            </p>
+          </div>
+          {!showEditForm && (
+            <button
+              type="button"
+              className="btn-outline"
+              onClick={() => setShowEditForm(true)}
+            >
+              ✏️ Edit competition
+            </button>
+          )}
         </header>
       </article>
 
+      {/* Venue card */}
       <article className="card stack">
         <h3>Venue</h3>
-        {/* Three possible states for the venue section:
-            - no venue assigned → static message
-            - venue loading → spinner (only while the second fetch is alive)
-            - venue error → ErrorState scoped to this card */}
         {!competition.venue ? <p>No venue assigned yet.</p> : null}
-        {competition.venue && venueState.isLoading ? <Spinner label="Loading venue..." /> : null}
+        {competition.venue && venueState.isLoading ? <Spinner label="Loading venue…" /> : null}
         {competition.venue && venueState.error ? <ErrorState message={venueState.error} /> : null}
         {venue ? (
           <dl className="detail-grid">
@@ -96,14 +136,33 @@ function CompetitionDetailPage() {
         ) : null}
       </article>
 
+      {/* Score card */}
+      {competition.score && (
+        <article className="card stack">
+          <h3>Score</h3>
+          <dl className="detail-grid">
+            {Object.entries(competition.score.results).map(([discipline, medals]) => (
+              <div key={discipline}>
+                <dt style={{ textTransform: "capitalize" }}>
+                  {discipline.replace("_", " ")}
+                </dt>
+                <dd>
+                  🥇 {medals.gold} &nbsp; 🥈 {medals.silver} &nbsp; 🥉 {medals.bronze}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </article>
+      )}
+
+      {/* Line-up card */}
       <article className="card stack">
         <h3>Line-up</h3>
         <p>
           <strong>Coaches:</strong>{" "}
-          {/* Fall back to TBD when the line-up has not been announced yet. */}
           {competition.coaches.length === 0
             ? "TBD"
-            : competition.coaches.map((coach) => coach.display_name).join(", ")}
+            : competition.coaches.map((c) => c.display_name).join(", ")}
         </p>
         <p>
           <strong>Athletes:</strong>{" "}
@@ -111,18 +170,41 @@ function CompetitionDetailPage() {
             "TBD"
           ) : (
             <span>
-              {/* Each athlete is a link back to its own detail page — this is
-                  where stories 3 and 4 meet. */}
-              {competition.athletes.map((athlete, index) => (
-                <span key={athlete.public_id}>
-                  {index > 0 ? ", " : ""}
-                  <Link to={`/athletes/${athlete.public_id}`}>{athlete.display_name}</Link>
+              {competition.athletes.map((a, i) => (
+                <span key={a.public_id}>
+                  {i > 0 ? ", " : ""}
+                  <Link to={`/athletes/${a.public_id}`}>{a.display_name}</Link>
                 </span>
               ))}
             </span>
           )}
         </p>
       </article>
+
+      {/* Story 6 — inline edit form */}
+      {showEditForm && (
+        <article className="card stack">
+          <h3>User Story 6: Edit competition score & roster</h3>
+          <p>
+            As an admin, I want to update the competition results and adjust the roster
+            so that the record reflects what happened on the day.
+          </p>
+
+          {athletesState.isLoading || coachesState.isLoading ? (
+            <Spinner label="Loading roster data…" />
+          ) : (
+            <CompetitionEditForm
+              competition={competition}
+              athletes={athletesState.data ?? []}
+              coaches={coachesState.data ?? []}
+              isLoading={isUpdating}
+              serverError={updateError}
+              onSubmit={doUpdate}
+              onCancel={handleEditCancel}
+            />
+          )}
+        </article>
+      )}
     </section>
   );
 }

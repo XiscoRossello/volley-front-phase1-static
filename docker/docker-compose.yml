@@ -1,0 +1,9 @@
+services:
+  volley-front:
+    build:
+      context: ../          # Vite project root (one level up from docker/)
+      dockerfile: docker/Dockerfile
+    image: volley-front:latest
+    ports:
+      - "80:80"
+    restart: unless-stopped

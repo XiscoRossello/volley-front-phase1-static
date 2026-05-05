@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" font-family="Inter, Arial, sans-serif" font-size="13">
+  <style>
+    .title { font-size: 18px; font-weight: 700; fill: #1d1031; }
+    .box { fill: #ffffff; stroke: #7c3aed; stroke-width: 1.5; rx: 10; ry: 10; }
+    .label { fill: #1d1031; font-weight: 600; }
+    .arrow { stroke: #5b21b6; stroke-width: 1.6; fill: none; marker-end: url(#arr); }
+    .btn { fill: #7c3aed; rx: 8; ry: 8; }
+    .btn-disabled { fill: #c4b5fd; rx: 8; ry: 8; }
+    .btn-text { fill: #fff; font-weight: bold; font-size: 14px; }
+    .ok { fill: #e8f7ef; stroke: #10b981; stroke-width: 1.5; }
+    .err { fill: #fde8e8; stroke: #dc2626; stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5b21b6"/>
+    </marker>
+  </defs>
+  
+  <text x="30" y="40" class="title">User Story 5 — Register a new athlete</text>
+
+  <g>
+    <!-- Screen 1: Form -->
+    <text x="30" y="90" class="label">Screen 1: Fill form (/athletes/new)</text>
+    <rect class="box" x="30" y="110" width="300" height="300"/>
+    
+    <text x="50" y="140" class="label">First name *</text>
+    <rect x="50" y="150" width="260" height="30" fill="#fff" stroke="#cbd5e1" rx="6" />
+    <text x="60" y="170" fill="#475569">John</text>
+
+    <text x="50" y="200" class="label">Last name *</text>
+    <rect x="50" y="210" width="260" height="30" fill="#fff" stroke="#cbd5e1" rx="6" />
+    <text x="60" y="230" fill="#475569">Doe</text>
+
+    <text x="50" y="260" class="label">Email *</text>
+    <rect x="50" y="270" width="260" height="30" fill="#fff" stroke="#cbd5e1" rx="6" />
+    <text x="60" y="290" fill="#475569">john@example.com</text>
+
+    <rect class="btn" x="50" y="340" width="130" height="30" />
+    <text x="65" y="360" class="btn-text">Register athlete</text>
+
+    <path class="arrow" d="M340 260 L400 260"/>
+
+    <!-- Screen 2: Loading State -->
+    <text x="410" y="90" class="label">Screen 2: Loading State (POST)</text>
+    <rect class="box" x="410" y="110" width="300" height="300"/>
+    
+    <text x="430" y="140" class="label" fill="#94a3b8">First name *</text>
+    <rect x="430" y="150" width="260" height="30" fill="#f1f5f9" stroke="#e2e8f0" rx="6" />
+    <text x="440" y="170" fill="#94a3b8">John</text>
+
+    <text x="430" y="200" class="label" fill="#94a3b8">Last name *</text>
+    <rect x="430" y="210" width="260" height="30" fill="#f1f5f9" stroke="#e2e8f0" rx="6" />
+    <text x="440" y="230" fill="#94a3b8">Doe</text>
+
+    <text x="430" y="260" class="label" fill="#94a3b8">Email *</text>
+    <rect x="430" y="270" width="260" height="30" fill="#f1f5f9" stroke="#e2e8f0" rx="6" />
+    <text x="440" y="290" fill="#94a3b8">john@example.com</text>
+
+    <rect class="btn-disabled" x="430" y="340" width="130" height="30" />
+    <text x="455" y="360" class="btn-text">Saving...</text>
+    <circle cx="445" cy="355" r="5" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="8 4" />
+
+    <path class="arrow" d="M720 230 L780 180"/>
+    <path class="arrow" stroke="#dc2626" stroke-dasharray="4" d="M720 280 L780 340"/>
+
+    <!-- Screen 3: Success -->
+    <text x="790" y="90" class="label">Screen 3: Success Redirect (/athletes/:id)</text>
+    <rect class="box" x="790" y="110" width="300" height="150"/>
+    <text x="810" y="140" class="label">John Doe's Profile</text>
+    
+    <rect class="ok" x="790" y="280" width="280" height="40" rx="8" />
+    <text x="805" y="305" fill="#065f46" font-weight="bold">✓ New athlete created successfully</text>
+
+    <!-- Alternate: Error -->
+    <text x="790" y="360" class="label" fill="#dc2626">Alternate Path: Server Error</text>
+    <rect class="err" x="790" y="380" width="280" height="40" rx="8" />
+    <text x="805" y="405" fill="#dc2626" font-weight="bold">Email already exists</text>
+  </g>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" font-family="Inter, Arial, sans-serif" font-size="13">
+  <style>
+    .title { font-size: 18px; font-weight: 700; fill: #1d1031; }
+    .sub { font-size: 12px; fill: #4c4468; }
+    .box { fill: #ffffff; stroke: #7c3aed; stroke-width: 1.5; rx: 10; ry: 10; }
+    .err { fill: #fde8e8; stroke: #dc2626; stroke-width: 1.5; }
+    .ok { fill: #e8f7ef; stroke: #10b981; stroke-width: 1.5; }
+    .mock { fill: #f7f7fb; stroke: #5b21b6; stroke-width: 1.5; }
+    .label { fill: #1d1031; font-weight: 600; }
+    .arrow { stroke: #5b21b6; stroke-width: 1.6; fill: none; marker-end: url(#arr); }
+    .btn { fill: #7c3aed; rx: 8; ry: 8; }
+    .btn-disabled { fill: #c4b5fd; rx: 8; ry: 8; }
+    .btn-text { fill: #fff; font-weight: bold; font-size: 14px; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#5b21b6"/>
+    </marker>
+  </defs>
+  
+  <text x="30" y="40" class="title">User Story 1 — Tryout Booking (Phase 3: Real POST Mutation)</text>
+
+  <g>
+    <!-- Screen 1: Default Form -->
+    <text x="30" y="90" class="label">Screen 1: Fill form</text>
+    <rect class="box" x="30" y="110" width="300" height="200"/>
+    <text x="50" y="140" class="label">Athlete profile</text>
+    <rect x="50" y="150" width="260" height="30" fill="#fff" stroke="#cbd5e1" rx="6" />
+    <text x="60" y="170" fill="#475569">Maria García</text>
+
+    <text x="50" y="210" class="label">Session</text>
+    <rect x="50" y="220" width="260" height="30" fill="#fff" stroke="#cbd5e1" rx="6" />
+    <text x="60" y="240" fill="#475569">Session A - 5 seats</text>
+
+    <rect class="btn" x="50" y="265" width="130" height="30" />
+    <text x="65" y="285" class="btn-text">Confirm booking</text>
+
+    <!-- Arrow -->
+    <path class="arrow" d="M340 210 L400 210"/>
+
+    <!-- Screen 2: Loading State -->
+    <text x="410" y="90" class="label">Screen 2: Loading State (POST in flight)</text>
+    <rect class="box" x="410" y="110" width="300" height="200"/>
+    
+    <text x="430" y="140" class="label" fill="#94a3b8">Athlete profile</text>
+    <rect x="430" y="150" width="260" height="30" fill="#f1f5f9" stroke="#e2e8f0" rx="6" />
+    <text x="440" y="170" fill="#94a3b8">Maria García</text>
+
+    <text x="430" y="210" class="label" fill="#94a3b8">Session</text>
+    <rect x="430" y="220" width="260" height="30" fill="#f1f5f9" stroke="#e2e8f0" rx="6" />
+    <text x="440" y="240" fill="#94a3b8">Session A - 5 seats</text>
+
+    <rect class="btn-disabled" x="430" y="265" width="130" height="30" />
+    <text x="455" y="285" class="btn-text">Booking...</text>
+    <!-- Fake spinner circle -->
+    <circle cx="445" cy="280" r="5" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="8 4" />
+
+    <!-- Arrow -->
+    <path class="arrow" d="M720 210 L780 210"/>
+
+    <!-- Screen 3: Success Toast -->
+    <text x="790" y="90" class="label">Screen 3: Success</text>
+    <rect class="box" x="790" y="110" width="300" height="200"/>
+    
+    <text x="810" y="140" class="label">Athlete profile</text>
+    <rect x="810" y="150" width="260" height="30" fill="#fff" stroke="#cbd5e1" rx="6" />
+    <text x="820" y="170" fill="#94a3b8">Select athlete...</text>
+
+    <rect class="ok" x="790" y="330" width="280" height="40" rx="8" />
+    <text x="805" y="355" fill="#065f46" font-weight="bold">✓ Booking confirmed!</text>
+
+  </g>
+</svg>

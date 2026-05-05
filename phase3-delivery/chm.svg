@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 850" font-family="Inter, Arial, sans-serif" font-size="13">
+  <style>
+    .title { font-size: 18px; font-weight: 700; fill: #1d1031; }
+    .box { fill: #ffffff; stroke: #7c3aed; stroke-width: 1.5; rx: 6; ry: 6; }
+    .newbox { fill: #f3e8ff; stroke: #7c3aed; stroke-width: 2; rx: 6; ry: 6; stroke-dasharray: 4; }
+    .label { fill: #1d1031; font-weight: 600; font-size: 14px; }
+    .sub { fill: #4c4468; font-size: 11px; font-style: italic; }
+    .line { stroke: #5b21b6; stroke-width: 1.5; fill: none; }
+    .verb { font-size: 10px; font-weight: bold; fill: #fff; }
+    .bg-get { fill: #10b981; rx: 4; }
+    .bg-post { fill: #3b82f6; rx: 4; }
+    .bg-patch { fill: #f59e0b; rx: 4; }
+    .bg-del { fill: #ef4444; rx: 4; }
+  </style>
+
+  <text x="40" y="40" class="title">Component Hierarchy Map — Phase 3</text>
+  <text x="40" y="65" class="sub" font-style="normal">Shows React tree with API verbs and Phase 3 additions (dashed purple outlines).</text>
+
+  <!-- Root &amp; Layout -->
+  <rect x="40" y="90" width="140" height="36" class="box" />
+  <text x="80" y="113" class="label">App</text>
+
+  <path class="line" d="M110 126 v24" />
+  
+  <rect x="40" y="150" width="140" height="36" class="box" />
+  <text x="65" y="173" class="label">MainLayout</text>
+
+  <path class="line" d="M180 168 h40" />
+  
+  <rect x="220" y="150" width="140" height="36" class="box" />
+  <text x="255" y="173" class="label">&lt;Outlet /&gt;</text>
+
+  <path class="line" d="M290 186 v610" />
+
+  <!-- Tryouts -->
+  <path class="line" d="M290 220 h40" />
+  <rect x="330" y="202" width="160" height="36" class="box" />
+  <text x="345" y="225" class="label">TryoutBookingPage</text>
+
+  <path class="line" d="M490 220 h40" />
+  <rect x="530" y="185" width="220" height="50" class="box" />
+  <text x="545" y="205" class="label">TryoutBookingForm</text>
+  <rect x="545" y="215" width="28" height="14" class="bg-get" />
+  <text x="550" y="226" class="verb">GET</text>
+  <rect x="580" y="215" width="36" height="14" class="bg-post" />
+  <text x="585" y="226" class="verb">POST</text>
+
+  <path class="line" d="M750 210 h40" />
+  <rect x="790" y="192" width="100" height="36" class="newbox" />
+  <text x="815" y="215" class="label">Toast</text>
+
+  <!-- Athletes List -->
+  <path class="line" d="M290 290 h40" />
+  <rect x="330" y="272" width="160" height="36" class="box" />
+  <text x="345" y="295" class="label">AthletesPage</text>
+  <rect x="450" y="282" width="28" height="14" class="bg-get" />
+  <text x="455" y="293" class="verb">GET</text>
+
+  <path class="line" d="M490 290 h40" />
+  <rect x="530" y="272" width="160" height="36" class="box" />
+  <text x="555" y="295" class="label">AthleteList</text>
+
+  <path class="line" d="M690 290 h40" />
+  <rect x="730" y="272" width="160" height="36" class="box" />
+  <text x="755" y="295" class="label">AthleteCard (xN)</text>
+
+  <path class="line" d="M410 308 v20 h40" />
+  <rect x="450" y="315" width="100" height="36" class="newbox" />
+  <text x="475" y="338" class="label">Toast</text>
+
+  <!-- Athlete Create (New) -->
+  <path class="line" d="M290 380 h40" />
+  <rect x="330" y="362" width="160" height="36" class="newbox" />
+  <text x="340" y="385" class="label">AthleteCreatePage</text>
+
+  <path class="line" d="M490 380 h40" />
+  <rect x="530" y="355" width="160" height="50" class="newbox" />
+  <text x="560" y="375" class="label">AthleteForm</text>
+  <rect x="560" y="385" width="36" height="14" class="bg-post" />
+  <text x="565" y="396" class="verb">POST</text>
+
+  <!-- Athlete Detail -->
+  <path class="line" d="M290 470 h40" />
+  <rect x="330" y="452" width="160" height="36" class="box" />
+  <text x="340" y="475" class="label">AthleteDetailPage</text>
+  <rect x="475" y="462" width="28" height="14" class="bg-get" />
+  <text x="480" y="473" class="verb">GET</text>
+
+  <path class="line" d="M490 470 h40" />
+  <rect x="530" y="425" width="160" height="50" class="newbox" />
+  <text x="560" y="445" class="label">AthleteForm</text>
+  <rect x="560" y="455" width="44" height="14" class="bg-patch" />
+  <text x="565" y="466" class="verb">PATCH</text>
+
+  <path class="line" d="M490 470 h40" />
+  <rect x="530" y="485" width="160" height="50" class="newbox" />
+  <text x="555" y="505" class="label">ConfirmDialog</text>
+  <rect x="555" y="515" width="50" height="14" class="bg-del" />
+  <text x="560" y="526" class="verb">DELETE</text>
+
+  <!-- Competitions List -->
+  <path class="line" d="M290 570 h40" />
+  <rect x="330" y="552" width="160" height="36" class="box" />
+  <text x="340" y="575" class="label">CompetitionsPage</text>
+  <rect x="475" y="562" width="28" height="14" class="bg-get" />
+  <text x="480" y="573" class="verb">GET</text>
+
+  <!-- Competitions Detail -->
+  <path class="line" d="M290 660 h40" />
+  <rect x="330" y="642" width="180" height="36" class="box" />
+  <text x="340" y="665" class="label">CompetitionDetailPage</text>
+  <rect x="495" y="652" width="28" height="14" class="bg-get" />
+  <text x="500" y="663" class="verb">GET</text>
+
+  <path class="line" d="M510 660 h40" />
+  <rect x="550" y="635" width="180" height="50" class="newbox" />
+  <text x="560" y="655" class="label">CompetitionEditForm</text>
+  <rect x="560" y="665" width="44" height="14" class="bg-patch" />
+  <text x="565" y="676" class="verb">PATCH</text>
+
+  <!-- Coaches -->
+  <path class="line" d="M290 740 h40" />
+  <rect x="330" y="722" width="160" height="36" class="box" />
+  <text x="365" y="745" class="label">CoachesPage</text>
+</svg>
